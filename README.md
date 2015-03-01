@@ -3,17 +3,8 @@ It will be a 2D platformer.
 
 The team is organized as such:
 
-Graphics\n
-Maddy Wu\n
-Satoko Ayabe\n
-Radhika Marvin\n
-Joyce Anne Chua\n
+Graphics: Maddy Wu, Satoko Ayabe, Radhika Marvin, Joyce Anne Chua, Patrick Soung
 
 
-Game Engine\n
-Regina Ongowarsito\n
-Claudia Tse\n
-Angel Kim\n
-Richard Hu\n
-Rene Saitenmacher\n
+Game Engine: Regina Ongowarsito, Claudia Tse, Angel Kim, Richard Hu, Rene Saitenmacher
 
