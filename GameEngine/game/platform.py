@@ -62,10 +62,10 @@ class Player(PhysicalObject):
 		elif symbol == key.RIGHT: 
 			self.keys['right'] = False
 
-	def within_bounds(self, other):
-		if ((self.position[0] >= other.position[0] - other.width / 2) & (self.position[0] <= other.position[0] + other.width / 2)):
+	def within_bounds(self, other, x_or_y):
+		if ((self.position[x_or_y] >= other.position[x_or_y] - other.width / 2) & (self.position[x_or_y] <= other.position[x_or_y] + other.width / 2)):
 			return True
-		if ((other.position[0] >= self.position[0] - self.width / 2) & (other.position[0] <= self.position[0] + self.width / 2)):
+		if ((other.position[x_or_y] >= self.position[x_or_y] - self.width / 2) & (other.position[x_or_y] <= self.position[x_or_y] + self.width / 2)):
 			return True
 		else:
 			return False
@@ -74,18 +74,13 @@ class Player(PhysicalObject):
 		if self.y <= 100:
 			return True
 		for i in range(1, len(game_objects)): 
-				if (self.within_bounds(game_objects[i]) & collides_with_vertical(self, game_objects[i])):
-					self.velocity_y = 0
+				if (self.within_bounds(game_objects[i], 0) & collides_with_vertical(self, game_objects[i])):
+					return True
 		else:
 			return False
 
 	def update(self, dt):
-		super(Player, self).update(dt)
 		self.velocity_y -= 75.0 #gravity
-		for i in range(1, len(game_objects)): 
-				if collides_with_vertical(self, game_objects[i]) & collides_with_horizontal(self, game_objects[i]):
-					self.velocity_x = 0
-
 
 		if self.keys['left']:
 			self.velocity_x = -self.speed
@@ -94,12 +89,18 @@ class Player(PhysicalObject):
 		else:
 			self.velocity_x = 0
 
+		for i in range(1, len(game_objects)): 
+			if self.within_bounds(game_objects[i], 1) & collides_with_horizontal(self, game_objects[i]):
+				self.velocity_x = 0
+
 		if self.grounded():
 			self.velocity_y = 0
 
 		if self.keys['up']:
 			if self.grounded():
 				self.velocity_y += 600
+
+		super(Player, self).update(dt)
 
 
 
@@ -121,5 +122,5 @@ def on_draw(): # draw things here
 	main_batch.draw()
 
 if __name__ == '__main__': 
-	pyglet.clock.schedule_interval(update, 1/120.0)
+	pyglet.clock.schedule_interval(update, 1/500.0)
 	pyglet.app.run()
