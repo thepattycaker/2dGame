@@ -7,13 +7,26 @@ main_batch = pyglet.graphics.Batch()
 pyglet.resource.path = ['../images']
 pyglet.resource.reindex() 
 player_image = pyglet.resource.image("player.png") #images go here
+terrain_image = pyglet.resource.image("terrain.png")
 
 def center_image(image):
 	"""Sets an image's anchor point to its center"""
 	image.anchor_x = image.width/2
 	image.anchor_y = image.height/2
 
+
+def collides_with_horizontal(player_object, other_object): 
+	collision_distance = player_object.image.width/2 + other_object.image.width/2 
+	actual_distance = abs(player_object.position[0] - other_object.position[0])
+	return (actual_distance <= collision_distance)
+
+def collides_with_vertical(player_object, other_object): 
+	collision_distance = player_object.image.height/2 + other_object.image.height/2 
+	actual_distance = abs(player_object.position[1] - other_object.position[1])
+	return (actual_distance <= collision_distance)
+
 center_image(player_image) #center all images on middle point
+center_image(terrain_image)
 
 level_label = pyglet.text.Label(text="This Is Not Mario", x=400, y=575, anchor_x='center', batch=main_batch) #level label
 
@@ -26,7 +39,6 @@ class PhysicalObject(pyglet.sprite.Sprite):
 	def update(self, dt):
 		self.x += self.velocity_x * dt
 		self.y += self.velocity_y * dt
-		self.velocity_y -= 75.0 #gravity
 
 class Player(PhysicalObject): 
 	def __init__(self, *args, **kwargs):
@@ -50,32 +62,51 @@ class Player(PhysicalObject):
 		elif symbol == key.RIGHT: 
 			self.keys['right'] = False
 
-	def grounded(self):
-		if self.y <= 100:
+	def within_bounds(self, other):
+		if ((self.position[0] >= other.position[0] - other.width / 2) & (self.position[0] <= other.position[0] + other.width / 2)):
+			return True
+		if ((other.position[0] >= self.position[0] - self.width / 2) & (other.position[0] <= self.position[0] + self.width / 2)):
 			return True
 		else:
 			return False
 
+	def grounded(self):
+		if self.y <= 100:
+			return True
+		for i in range(1, len(game_objects)): 
+				if (self.within_bounds(game_objects[i]) & collides_with_vertical(self, game_objects[i])):
+					self.velocity_y = 0
+		else:
+			return False
+
 	def update(self, dt):
-		super(Player, self).update(dt) 
-		if self.keys['left']: 
+		super(Player, self).update(dt)
+		self.velocity_y -= 75.0 #gravity
+		for i in range(1, len(game_objects)): 
+				if collides_with_vertical(self, game_objects[i]) & collides_with_horizontal(self, game_objects[i]):
+					self.velocity_x = 0
+
+
+		if self.keys['left']:
 			self.velocity_x = -self.speed
 		elif self.keys['right']: 
 			self.velocity_x = self.speed
 		else:
 			self.velocity_x = 0
 
-		if self.keys['up']:
-			if self.grounded():
-				self.velocity_y += 150
-
 		if self.grounded():
 			self.velocity_y = 0
 
+		if self.keys['up']:
+			if self.grounded():
+				self.velocity_y += 1000
+
+
+
 
 player = Player(x=400, y=100, batch=main_batch)
-
-game_objects = [player]
+box = PhysicalObject(img=terrain_image, x=100,y=100, batch=main_batch)
+game_objects = [player] + [box]
 game_window.push_handlers(player)
 
 ############### starting the game ##############
