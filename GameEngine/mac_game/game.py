@@ -14,6 +14,13 @@ def center_image(image):
 	image.anchor_x = image.width/2
 	image.anchor_y = image.height/2
 
+def distance(point_1=(0, 0), point_2=(0, 0)): 
+	return math.sqrt( (point_1[0] - point_2[0]) ** 2 + (point_1[1] - point_2[1]) ** 2)
+
+def collides_with(player_object, other_object): 
+	collision_distance = player_object.image.width/2 + other_object.image.width/2 
+	actual_distance = distance( player_object.position, other_object.position) 
+	return (actual_distance <= collision_distance)
 
 def collides_with_horizontal(player_object, other_object): 
 	collision_distance = player_object.image.width/2 + other_object.image.width/2 
@@ -62,10 +69,18 @@ class Player(PhysicalObject):
 		elif symbol == key.RIGHT: 
 			self.keys['right'] = False
 
-	def within_bounds(self, other):
+	def within_bounds_x(self, other):
 		if ((self.position[0] >= other.position[0] - other.width / 2) & (self.position[0] <= other.position[0] + other.width / 2)):
 			return True
 		if ((other.position[0] >= self.position[0] - self.width / 2) & (other.position[0] <= self.position[0] + self.width / 2)):
+			return True
+		else:
+			return False
+
+	def within_bounds_y(self, other):
+		if ((self.position[1] >= other.position[1] - other.height / 2) & (self.position[1] <= other.position[1] + other.height / 2)):
+			return True
+		if ((other.position[1] >= self.position[1] - self.height / 2) & (other.position[1] <= self.position[1] + self.height / 2)):
 			return True
 		else:
 			return False
@@ -74,23 +89,24 @@ class Player(PhysicalObject):
 		if self.y <= 100:
 			return True
 		for i in range(1, len(game_objects)): 
-				if (self.within_bounds(game_objects[i]) & collides_with_vertical(self, game_objects[i])):
-					self.velocity_y = 0
+				if (self.within_bounds_x(game_objects[i]) & collides_with_vertical(self, game_objects[i]) & (self.position[1] >= game_objects[i].position[1])):
+					return True
 		else:
 			return False
 
 	def update(self, dt):
-		super(Player, self).update(dt)
 		self.velocity_y -= 75.0 #gravity
-		for i in range(1, len(game_objects)): 
-				if collides_with_vertical(self, game_objects[i]) & collides_with_horizontal(self, game_objects[i]):
-					self.velocity_x = 0
-
 
 		if self.keys['left']:
 			self.velocity_x = -self.speed
+			for i in range(1, len(game_objects)): 
+				if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]):
+					self.velocity_x = 0
 		elif self.keys['right']: 
 			self.velocity_x = self.speed
+			for i in range(1, len(game_objects)): 
+				if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] <= game_objects[i].position[0]):
+					self.velocity_x = 0
 		else:
 			self.velocity_x = 0
 
@@ -99,14 +115,20 @@ class Player(PhysicalObject):
 
 		if self.keys['up']:
 			if self.grounded():
-				self.velocity_y += 1000
+				self.velocity_y += 850
+
+		super(Player, self).update(dt)
 
 
 
 
 player = Player(x=400, y=100, batch=main_batch)
-box = PhysicalObject(img=terrain_image, x=100,y=100, batch=main_batch)
-game_objects = [player] + [box]
+
+box = PhysicalObject(img=terrain_image, x=0,y=100, batch=main_batch)
+box2 = PhysicalObject(img=terrain_image, x=100,y=100, batch=main_batch)
+box3 = PhysicalObject(img=terrain_image, x=200,y=100, batch=main_batch)
+box4 = PhysicalObject(img=terrain_image, x=300,y=100, batch=main_batch)
+game_objects = [player] + [box, box2, box3, box4]
 game_window.push_handlers(player)
 
 ############### starting the game ##############
@@ -121,5 +143,5 @@ def on_draw(): # draw things here
 	main_batch.draw()
 
 if __name__ == '__main__': 
-	pyglet.clock.schedule_interval(update, 1/120.0)
+	pyglet.clock.schedule_interval(update, 1/500.0)
 	pyglet.app.run()
