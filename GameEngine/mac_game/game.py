@@ -61,9 +61,8 @@ class Player(PhysicalObject):
 
     def __init__(self, *args, **kwargs):
         super(Player, self).__init__(img=player_image, *args, **kwargs)
-        self.speed = 300.0
+        self.speed = 250.0
         self.keys = dict(left=False, right=False, up=False, A=False, D=False)
-        self.direction = "R"
         self.prior_x = self.x
         self.prior_y = self.y
 
@@ -170,18 +169,19 @@ class Player(PhysicalObject):
         super(Player, self).update(dt)
 
 
-player = Player(x=400, y=100, batch=main_batch)
 
-box = PhysicalObject(img=terrain_image, x=0,y=100, batch=main_batch)
-box2 = PhysicalObject(img=terrain_image, x=100,y=100, batch=main_batch)
-box3 = PhysicalObject(img=terrain_image, x=200,y=100, batch=main_batch)
-box4 = PhysicalObject(img=terrain_image, x=300,y=100, batch=main_batch)
-#pencils = PhysicalObject(img=pencil_image, x=300, y=100, batch=main_batch)
-#computer = PhysicalObject(img=computer_image, x=100, y=100, batch=main_batch)
-#books = PhysicalObject(img=books
+#box = PhysicalObject(img=terrain_image, x=0,y=100, batch=main_batch)
+#box2 = PhysicalObject(img=terrain_image, x=100,y=100, batch=main_batch)
+#box3 = PhysicalObject(img=terrain_image, x=200,y=100, batch=main_batch)
+#box4 = PhysicalObject(img=terrain_image, x=300,y=100, batch=main_batch)
 desktop = PhysicalObject(img=desktop_image, x=0, y=0, batch=main_batch)
+computer = PhysicalObject(img=computer_image, x=0, y=desktop.height-1, batch=main_batch)
+pencils = PhysicalObject(img=pencils_image, x=computer.width, y=desktop.height, batch=main_batch)
+#books = PhysicalObject(img=books
+player = Player(x=400, y=desktop_image.height, batch=main_batch)
 
-game_objects = [player] + [box, box2, box3, box4] + [desktop]
+
+game_objects = [player] + [desktop] + [computer]
 #game_objects = [player] + [desktop]
 
 game_window.push_handlers(player)
