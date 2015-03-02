@@ -122,7 +122,6 @@ class Player(PhysicalObject):
 
     def update(self, dt):
         self.velocity_y -= 75.0 #gravity
-
         if self.keys['left']:
             self.velocity_x = -self.speed
             for i in range(1, len(game_objects)): 
