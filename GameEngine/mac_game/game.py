@@ -166,22 +166,28 @@ class Player(PhysicalObject):
                 level_label = pyglet.text.Label("You win!!", font_name='Raleway', font_size=36, color=(150, 0, 100, 255), x=400, y=400, anchor_x='center', batch=main_batch)
             if self.keys['left']:
                 self.velocity_x = -self.speed
-                for i in range(1, len(game_objects)): 
-                    if game_objects[i].is_death_obj():
-                        self.image = death_blob
-                        self.is_dead()
+                for i in range(1, len(game_objects)):
+                    if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]) or (collides_with_vertical(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]) and game_objects[i].is_death_obj()):
+                        if game_objects[i].is_death_obj():
+                            self.image = death_blob
+                            self.is_dead()
+                            break
+
+                        self.velocity_x = 0
+                        self.x = self.prior_x
+                        self.y = self.prior_y
                     else:
-                        if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]):
-                            self.velocity_x = 0
-                            self.x = self.prior_x
-                            self.y = self.prior_y
-                        else:
-                            self.prior_x = self.x
-                            self.prior_y = self.y
+                        self.prior_x = self.x
+                        self.prior_y = self.y
             elif self.keys['right']: 
                 self.velocity_x = self.speed
                 for i in range(1, len(game_objects)): 
-                    if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] <= game_objects[i].position[0]):
+                    if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]) or (collides_with_vertical(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]) and game_objects[i].is_death_obj()):
+                        if game_objects[i].is_death_obj():
+                            self.image = death_blob
+                            self.is_dead()
+                            break
+
                         self.velocity_x = 0
                         self.x = self.prior_x
                         self.y = self.prior_y
