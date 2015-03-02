@@ -5,7 +5,9 @@ from pyglet.window import key
 main_batch = pyglet.graphics.Batch()
 pyglet.resource.path = ['../images']
 pyglet.resource.reindex() 
-player_image = pyglet.resource.image("player.png") #images go here
+player_image_R = pyglet.resource.image("player_right.png") #images go here
+player_image_L = pyglet.resource.image("player_left.png")
+player_image = player_image_R
 terrain_image = pyglet.resource.image("terrain.png")
 background = pyglet.resource.image("background.png")
 
@@ -52,7 +54,6 @@ class PhysicalObject(pyglet.sprite.Sprite):
 		self.y += self.velocity_y * dt
 
 class Player(PhysicalObject):
-
 	teletime = 0;
 	
 	def __init__(self, *args, **kwargs):
