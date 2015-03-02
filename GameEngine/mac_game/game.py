@@ -69,7 +69,7 @@ class Player(PhysicalObject):
     def __init__(self, *args, **kwargs):
         super(Player, self).__init__(img=player_image, *args, **kwargs)
         self.speed = 250.0
-        self.keys = dict(left=False, right=False, up=False, A=False, D=False)
+        self.keys = dict(left=False, right=False, up=False, A=False, D=False, W=False)
         self.prior_x = self.x
         self.prior_y = self.y
 
@@ -88,6 +88,8 @@ class Player(PhysicalObject):
         elif symbol == key.D:
             self.keys['D'] = True
             self.image = player_image_R
+        elif symbol == key.W:
+            self.keys['W'] = True
 
     def on_key_release(self, symbol, modifiers):
         if symbol == key.UP: 
@@ -100,6 +102,8 @@ class Player(PhysicalObject):
             self.keys['A'] = False
         elif symbol == key.D:
             self.keys['D'] = False
+        elif symbol == key.W:
+            self.keys['W'] = False
 
     def within_bounds_x(self, other):
         if ((self.position[0] >= other.position[0] - other.width / 2) & (self.position[0] <= other.position[0] + other.width / 2)):
@@ -172,6 +176,11 @@ class Player(PhysicalObject):
             if self.keys['D']:
                 self.velocity_x = 0
                 self.x = self.x + 150
+                self.teletime = 10
+
+            if self.keys['W']:
+                self.velocity_x = 0
+                self.y = self.y + 150
                 self.teletime = 10
 
         if self.teletime > 0:
