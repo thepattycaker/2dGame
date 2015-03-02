@@ -42,6 +42,8 @@ def collides_with_vertical(player_object, other_object):
 	return (actual_distance <= collision_distance)
 
 center_image(player_image) #center all images on middle point
+center_image(player_image_R)
+center_image(player_image_L)
 center_image(terrain_image)
 
 level_label = pyglet.text.Label(text="This Is Not Mario", x=400, y=575, anchor_x='center', batch=main_batch) #level label
