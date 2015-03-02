@@ -5,7 +5,9 @@ from pyglet.window import key
 main_batch = pyglet.graphics.Batch()
 pyglet.resource.path = ['../images']
 pyglet.resource.reindex() 
-player_image = pyglet.resource.image("player.png") #images go here
+player_image_R = pyglet.resource.image("player_right.png") #images go here
+player_image_L = pyglet.resource.image("player_left.png")
+player_image = player_image_R
 terrain_image = pyglet.resource.image("terrain.png")
 background = pyglet.resource.image("background.png")
 
@@ -56,17 +58,17 @@ class Player(PhysicalObject):
         super(Player, self).__init__(img=player_image, *args, **kwargs)
         self.speed = 300.0
         self.keys = dict(left=False, right=False, up=False)
-        self.direction = "R"
+        # self.direction = "R"
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.UP: 
             self.keys['up'] = True 
         elif symbol == key.LEFT:
             self.keys['left'] = True
-            self.direction = "L"
+            player_image = player_image_L
         elif symbol == key.RIGHT: 
             self.keys['right'] = True 
-            self.direction = "R"
+            player_image = player_image_R
 
     def on_key_release(self, symbol, modifiers):
         if symbol == key.UP: 
