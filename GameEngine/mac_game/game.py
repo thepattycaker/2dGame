@@ -160,6 +160,9 @@ class Player(PhysicalObject):
         if self.keys['left']:
             self.velocity_x = -self.speed
             for i in range(1, len(game_objects)): 
+                if game_objects[i].is_death_obj():
+                    self.image = death_blob
+                    return
                 if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]):
                     self.velocity_x = 0
                     self.x = self.prior_x
