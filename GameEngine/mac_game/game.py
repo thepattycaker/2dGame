@@ -1,5 +1,6 @@
 import pyglet, math
 from pyglet.window import key
+import time
 
 
 main_batch = pyglet.graphics.Batch()
@@ -93,6 +94,10 @@ class Player(PhysicalObject):
         self.keys = dict(left=False, right=False, up=False, A=False, D=False, W=False)
         self.prior_x = self.x
         self.prior_y = self.y
+        self.life = True
+
+    def is_dead(self):
+        self.life = False
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.UP: 
@@ -152,65 +157,69 @@ class Player(PhysicalObject):
             return False
 
     def update(self, dt):
-        self.velocity_y -= 75.0 #gravity
-        if self.x < 0:
-            self.x = 0
-        if self.x > (700):
-            self.y = -1000000
-            level_label = pyglet.text.Label("You win!!", font_name='Raleway', font_size=36, color=(150, 0, 100, 255), x=400, y=400, anchor_x='center', batch=main_batch)
-        if self.keys['left']:
-            self.velocity_x = -self.speed
-            for i in range(1, len(game_objects)): 
-                if game_objects[i].is_death_obj():
-                    self.image = death_blob
-                    return
-                if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]):
-                    self.velocity_x = 0
-                    self.x = self.prior_x
-                    self.y = self.prior_y
-                else:
-                    self.prior_x = self.x
-                    self.prior_y = self.y
-        elif self.keys['right']: 
-            self.velocity_x = self.speed
-            for i in range(1, len(game_objects)): 
-                if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] <= game_objects[i].position[0]):
-                    self.velocity_x = 0
-                    self.x = self.prior_x
-                    self.y = self.prior_y
-                else:
-                    self.prior_x = self.x
-                    self.prior_y = self.y
-        else:
-            self.velocity_x = 0
+        if (self.life):
+            self.velocity_y -= 75.0 #gravity
+            if self.x < 0:
+                self.x = 0
+            if self.x > (700):
+                self.y = -1000000
+                level_label = pyglet.text.Label("You win!!", font_name='Raleway', font_size=36, color=(150, 0, 100, 255), x=400, y=400, anchor_x='center', batch=main_batch)
+            if self.keys['left']:
+                self.velocity_x = -self.speed
+                for i in range(1, len(game_objects)): 
+                    if game_objects[i].is_death_obj():
+                        self.image = death_blob
+                        self.is_dead()
+                    else:
+                        if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]):
+                            self.velocity_x = 0
+                            self.x = self.prior_x
+                            self.y = self.prior_y
+                        else:
+                            self.prior_x = self.x
+                            self.prior_y = self.y
+            elif self.keys['right']: 
+                self.velocity_x = self.speed
+                for i in range(1, len(game_objects)): 
+                    if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] <= game_objects[i].position[0]):
+                        self.velocity_x = 0
+                        self.x = self.prior_x
+                        self.y = self.prior_y
+                    else:
+                        self.prior_x = self.x
+                        self.prior_y = self.y
+            else:
+                self.velocity_x = 0
 
-        if self.grounded():
-            self.velocity_y = 0
-
-        if self.keys['up']:
             if self.grounded():
-                self.velocity_y += 850
+                self.velocity_y = 0
 
-        if self.teletime == 0:
-            if self.keys['A']:
-                self.velocity_x = 0
-                self.x = self.x - 150
-                self.teletime = 10
+            if self.keys['up']:
+                if self.grounded():
+                    self.velocity_y += 850
 
-            if self.keys['D']:
-                self.velocity_x = 0
-                self.x = self.x + 150
-                self.teletime = 10
+            if self.teletime == 0:
+                if self.keys['A']:
+                    self.velocity_x = 0
+                    self.x = self.x - 150
+                    self.teletime = 10
 
-            if self.keys['W']:
-                self.velocity_x = 0
-                self.y = self.y + 150
-                self.teletime = 10
+                if self.keys['D']:
+                    self.velocity_x = 0
+                    self.x = self.x + 150
+                    self.teletime = 10
 
-        if self.teletime > 0:
-            self.teletime = self.teletime - 1
+                if self.keys['W']:
+                    self.velocity_x = 0
+                    self.y = self.y + 150
+                    self.teletime = 10
 
-        super(Player, self).update(dt)
+            if self.teletime > 0:
+                self.teletime = self.teletime - 1
+
+            super(Player, self).update(dt)
+        else:
+            self.image = death_blob
 
 
 
