@@ -124,6 +124,11 @@ class Player(PhysicalObject):
 
     def update(self, dt):
         self.velocity_y -= 75.0 #gravity
+        if self.x < 0:
+            self.x = 0
+        if self.x > (background.width + 30):
+            self.y = -1000000
+            level_label = pyglet.text.Label("You win!!", font_name='Raleway', font_size=36, color=(150, 0, 100, 255), x=400, y=400, anchor_x='center', batch=main_batch)
         if self.keys['left']:
             self.velocity_x = -self.speed
             for i in range(1, len(game_objects)): 
