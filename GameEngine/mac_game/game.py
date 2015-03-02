@@ -16,6 +16,7 @@ desktop_image = pyglet.resource.image("Desktop.png")
 books_image = pyglet.resource.image("books.png")
 cute_blob = pyglet.resource.image("cuteblob.png")
 music = pyglet.resource.media("music.mp3")
+death_blob = pyglet.resource.image("death.png")
 
 width, height = background.width, background.height
 game_window = pyglet.window.Window(width, height)
@@ -53,6 +54,7 @@ center_image(pencils_image)
 center_image(desktop_image)
 center_image(books_image)
 center_image(cute_blob)
+center_image(death_blob)
 
 level_label = pyglet.text.Label(text="This Is Not Mario", x=400, y=575, anchor_x='center', batch=main_batch) #level label
 
@@ -65,6 +67,22 @@ class PhysicalObject(pyglet.sprite.Sprite):
     def update(self, dt):
         self.x += self.velocity_x * dt
         self.y += self.velocity_y * dt
+
+    def is_death_obj(self):
+        return False
+
+class DeathObject(PhysicalObject):
+    def __init__(self, *args, **kwargs):
+        super(PhysicalObject, self).__init__(*args, **kwargs)
+
+        self.velocity_x, self.velocity_y = 0.0, 0.0
+
+    def update(self, dt):
+        self.x += self.velocity_x * dt
+        self.y += self.velocity_y * dt
+
+    def is_death_obj(self):
+        return True
 
 class Player(PhysicalObject):
     teletime = 0;
@@ -195,7 +213,7 @@ class Player(PhysicalObject):
 
 desktop = PhysicalObject(img=desktop_image, x=396, y=10, batch=main_batch)
 computer = PhysicalObject(img=computer_image, x=150, y=desktop.height+75, batch=main_batch)
-pencils = PhysicalObject(img=pencils_image, x=340, y=desktop.height+50, batch=main_batch)
+pencils = DeathObject(img=pencils_image, x=340, y=desktop.height+50, batch=main_batch)
 books = PhysicalObject(img=books_image, x=600, y=desktop.height+70, batch=main_batch)
 cute_blob = PhysicalObject(img=cute_blob, x=700, y=desktop.height+260, batch=main_batch)
 
