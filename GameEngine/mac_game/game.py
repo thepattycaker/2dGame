@@ -4,10 +4,15 @@ from pyglet.window import key
 
 main_batch = pyglet.graphics.Batch()
 pyglet.resource.path = ['../images']
-pyglet.resource.reindex() 
+pyglet.resource.reindex()
 player_image = pyglet.resource.image("player.png") #images go here
+player_image_R = pyglet.resource.image("player_right.png")
+player_image_L = pyglet.resource.image("player_left.png")
 terrain_image = pyglet.resource.image("terrain.png")
 background = pyglet.resource.image("background.png")
+computer_image = pyglet.resource.image("Computer.png")
+pencils_image = pyglet.resource.image("Pencils.png")
+desktop_image = pyglet.resource.image("Desktop.png")
 
 width, height = background.width, background.height
 game_window = pyglet.window.Window(width, height)
@@ -56,17 +61,16 @@ class Player(PhysicalObject):
         super(Player, self).__init__(img=player_image, *args, **kwargs)
         self.speed = 300.0
         self.keys = dict(left=False, right=False, up=False)
-        self.direction = "R"
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.UP: 
-            self.keys['up'] = True 
+            self.keys['up'] = True
         elif symbol == key.LEFT:
             self.keys['left'] = True
-            self.direction = "L"
+            self.image = player_image_L
         elif symbol == key.RIGHT: 
-            self.keys['right'] = True 
-            self.direction = "R"
+            self.keys['right'] = True
+            self.image = player_image_R
 
     def on_key_release(self, symbol, modifiers):
         if symbol == key.UP: 
@@ -109,11 +113,13 @@ class Player(PhysicalObject):
             for i in range(1, len(game_objects)): 
                 if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]):
                     self.velocity_x = 0
+            player_image = pyglet.resource.image("player_left.png")
         elif self.keys['right']: 
             self.velocity_x = self.speed
             for i in range(1, len(game_objects)): 
                 if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] <= game_objects[i].position[0]):
                     self.velocity_x = 0
+            player_image = pyglet.resource.image("player_right.png")
         else:
             self.velocity_x = 0
 
@@ -135,12 +141,19 @@ box = PhysicalObject(img=terrain_image, x=0,y=100, batch=main_batch)
 box2 = PhysicalObject(img=terrain_image, x=100,y=100, batch=main_batch)
 box3 = PhysicalObject(img=terrain_image, x=200,y=100, batch=main_batch)
 box4 = PhysicalObject(img=terrain_image, x=300,y=100, batch=main_batch)
-game_objects = [player] + [box, box2, box3, box4]
+#pencils = PhysicalObject(img=pencil_image, x=300, y=100, batch=main_batch)
+#computer = PhysicalObject(img=computer_image, x=100, y=100, batch=main_batch)
+#books = PhysicalObject(img=books
+desktop = PhysicalObject(img=desktop_image, x=0, y=0, batch=main_batch)
+
+game_objects = [player] + [box, box2, box3, box4] + [desktop]
+#game_objects = [player] + [desktop]
+
 game_window.push_handlers(player)
 
 ############### starting the game ##############
 def update(dt):
-    for obj in game_objects: 
+    for obj in game_objects:
         obj.update(dt)
 
 @game_window.event
@@ -150,6 +163,6 @@ def on_draw(): # draw things here
 
     main_batch.draw()
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     pyglet.clock.schedule_interval(update, 1/500.0)
     pyglet.app.run()
