@@ -40,11 +40,33 @@ class PhysicalObject(pyglet.sprite.Sprite):
 		self.x += self.velocity_x * dt
 		self.y += self.velocity_y * dt
 
-class Player(PhysicalObject): 
+class Player(PhysicalObject):
+
 	def __init__(self, *args, **kwargs):
 		super(Player, self).__init__(img=player_image, *args, **kwargs)
 		self.speed = 300.0
+		self.warp_here_x, self.warp_here_y = 0, 0
 		self.keys = dict(left=False, right=False, up=False)
+		self.mouse = dict(left=False)
+
+	def on_mouse_press(self, x, y, button, modifiers):
+		if button == pyglet.window.mouse.LEFT:
+			print('I have pecs.')
+			self.mouse['left'] = True
+		self.warp_here_x = x
+		self.warp_here_y = y
+		print(self.warp_here_x)
+		print(self.warp_here_y)
+
+	def on_mouse_release(self, x, y, button, modifiers):
+		if button == pyglet.window.mouse.LEFT:
+			print('But not anymore.')
+			self.keys['up'] = False
+		self.warp_here_x = 0
+		self.warp_here_y = 0
+		print(self.warp_here_x)
+		print(self.warp_here_y)
+
 
 	def on_key_press(self, symbol, modifiers):
 		if symbol == key.UP: 
@@ -99,6 +121,10 @@ class Player(PhysicalObject):
 		if self.keys['up']:
 			if self.grounded():
 				self.velocity_y += 600
+
+		if self.mouse['left']:
+			if self.grounded():
+				self.velocity_y += self.warp_here_y * 2
 
 		super(Player, self).update(dt)
 
