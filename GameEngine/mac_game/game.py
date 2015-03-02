@@ -15,6 +15,7 @@ pencils_image = pyglet.resource.image("Pencils.png")
 desktop_image = pyglet.resource.image("Desktop.png")
 books_image = pyglet.resource.image("books.png")
 cute_blob = pyglet.resource.image("cuteblob.png")
+music = pyglet.resource.media("music.mp3")
 death_blob = pyglet.resource.image("death.png")
 
 width, height = background.width, background.height
@@ -241,5 +242,7 @@ def on_draw(): # draw things here
 
 if __name__ == '__main__':
     pyglet.clock.schedule_interval(update, 1/500.0)
+    music.play()
+
     pyglet.app.run()
 
