@@ -61,6 +61,8 @@ class Player(PhysicalObject):
 		self.speed = 300.0
 		self.keys = dict(left=False, right=False, up=False, A=False, D=False)
 		self.direction = "R"
+		self.initial_x = self.x
+		self.initial_y = self.y
 		self.prior_x = self.x
 		self.prior_y = self.y
 
@@ -113,8 +115,10 @@ class Player(PhysicalObject):
 			return True
 		for i in range(1, len(game_objects)): 
 			if (self.within_bounds_x(game_objects[i]) & collides_with_vertical(self, game_objects[i]) & (self.position[1] >= game_objects[i].position[1])):
+				self.y = self.prior_y
 				return True
 		else:
+			self.prior_y = self.y
 			return False
 
 	def update(self, dt):
