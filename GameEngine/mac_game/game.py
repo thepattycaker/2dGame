@@ -13,6 +13,7 @@ background = pyglet.resource.image("background.png")
 computer_image = pyglet.resource.image("Computer.png")
 pencils_image = pyglet.resource.image("Pencils.png")
 desktop_image = pyglet.resource.image("Desktop.png")
+books_image = pyglet.resource.image("books.png")
 
 width, height = background.width, background.height
 game_window = pyglet.window.Window(width, height)
@@ -45,6 +46,10 @@ center_image(player_image) #center all images on middle point
 center_image(player_image_R)
 center_image(player_image_L)
 center_image(terrain_image)
+center_image(computer_image)
+center_image(pencils_image)
+center_image(desktop_image)
+center_image(books_image)
 
 level_label = pyglet.text.Label(text="This Is Not Mario", x=400, y=575, anchor_x='center', batch=main_batch) #level label
 
@@ -172,18 +177,14 @@ class Player(PhysicalObject):
 
 
 
-#box = PhysicalObject(img=terrain_image, x=0,y=100, batch=main_batch)
-#box2 = PhysicalObject(img=terrain_image, x=100,y=100, batch=main_batch)
-#box3 = PhysicalObject(img=terrain_image, x=200,y=100, batch=main_batch)
-#box4 = PhysicalObject(img=terrain_image, x=300,y=100, batch=main_batch)
-desktop = PhysicalObject(img=desktop_image, x=0, y=0, batch=main_batch)
-computer = PhysicalObject(img=computer_image, x=0, y=desktop.height-1, batch=main_batch)
-pencils = PhysicalObject(img=pencils_image, x=computer.width, y=desktop.height, batch=main_batch)
-#books = PhysicalObject(img=books
-player = Player(x=400, y=desktop_image.height, batch=main_batch)
+desktop = PhysicalObject(img=desktop_image, x=396, y=10, batch=main_batch)
+computer = PhysicalObject(img=computer_image, x=150, y=desktop.height+75, batch=main_batch)
+pencils = PhysicalObject(img=pencils_image, x=340, y=desktop.height+50, batch=main_batch)
+books = PhysicalObject(img=books_image, x=600, y=desktop.height+70, batch=main_batch)
+player = Player(x=50, y=height, batch=main_batch)
 
 
-game_objects = [player] + [desktop] + [computer]
+game_objects = [player] + [desktop] + [computer] + [pencils] + [books]
 #game_objects = [player] + [desktop]
 
 game_window.push_handlers(player)
