@@ -69,10 +69,18 @@ class Player(PhysicalObject):
 		elif symbol == key.RIGHT: 
 			self.keys['right'] = False
 
-	def within_bounds(self, other, x_or_y):
-		if ((self.position[x_or_y] >= other.position[x_or_y] - other.width / 2) & (self.position[x_or_y] <= other.position[x_or_y] + other.width / 2)):
+	def within_bounds_x(self, other):
+		if ((self.position[0] >= other.position[0] - other.width / 2) & (self.position[0] <= other.position[0] + other.width / 2)):
 			return True
-		if ((other.position[x_or_y] >= self.position[x_or_y] - self.width / 2) & (other.position[x_or_y] <= self.position[x_or_y] + self.width / 2)):
+		if ((other.position[0] >= self.position[0] - self.width / 2) & (other.position[0] <= self.position[0] + self.width / 2)):
+			return True
+		else:
+			return False
+
+	def within_bounds_y(self, other):
+		if ((self.position[1] >= other.position[1] - other.height / 2) & (self.position[1] <= other.position[1] + other.height / 2)):
+			return True
+		if ((other.position[1] >= self.position[1] - self.height / 2) & (other.position[1] <= self.position[1] + self.height / 2)):
 			return True
 		else:
 			return False
@@ -81,7 +89,7 @@ class Player(PhysicalObject):
 		if self.y <= 100:
 			return True
 		for i in range(1, len(game_objects)): 
-				if (self.within_bounds(game_objects[i], 0) & collides_with_vertical(self, game_objects[i]) & (self.position[1] >= game_objects[i].position[1])):
+				if (self.within_bounds_x(game_objects[i]) & collides_with_vertical(self, game_objects[i]) & (self.position[1] >= game_objects[i].position[1])):
 					return True
 		else:
 			return False
@@ -92,12 +100,12 @@ class Player(PhysicalObject):
 		if self.keys['left']:
 			self.velocity_x = -self.speed
 			for i in range(1, len(game_objects)): 
-				if collides_with(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]):
+				if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]):
 					self.velocity_x = 0
 		elif self.keys['right']: 
 			self.velocity_x = self.speed
 			for i in range(1, len(game_objects)): 
-				if collides_with(self, game_objects[i]) & (self.position[0] <= game_objects[i].position[0]):
+				if self.within_bounds_y(game_objects[i]) & collides_with_horizontal(self, game_objects[i]) & (self.position[0] <= game_objects[i].position[0]):
 					self.velocity_x = 0
 		else:
 			self.velocity_x = 0
@@ -135,5 +143,5 @@ def on_draw(): # draw things here
 	main_batch.draw()
 
 if __name__ == '__main__': 
-	pyglet.clock.schedule_interval(update, 1/120.0)
+	pyglet.clock.schedule_interval(update, 1/500.0)
 	pyglet.app.run()
