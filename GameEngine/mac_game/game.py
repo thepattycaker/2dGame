@@ -51,11 +51,14 @@ class PhysicalObject(pyglet.sprite.Sprite):
         self.x += self.velocity_x * dt
         self.y += self.velocity_y * dt
 
-class Player(PhysicalObject): 
+class Player(PhysicalObject):
+
+    teletime = 0;
+    
     def __init__(self, *args, **kwargs):
         super(Player, self).__init__(img=player_image, *args, **kwargs)
         self.speed = 300.0
-        self.keys = dict(left=False, right=False, up=False)
+        self.keys = dict(left=False, right=False, up=False, A=False, D=False)
         self.direction = "R"
 
     def on_key_press(self, symbol, modifiers):
@@ -67,6 +70,12 @@ class Player(PhysicalObject):
         elif symbol == key.RIGHT: 
             self.keys['right'] = True 
             self.direction = "R"
+        elif symbol == key.A:
+            self.keys['A'] = True
+            self.direction = "L"
+        elif symbol == key.D:
+            self.keys['D'] = True
+            self.direction = "R"
 
     def on_key_release(self, symbol, modifiers):
         if symbol == key.UP: 
@@ -75,6 +84,10 @@ class Player(PhysicalObject):
             self.keys['left'] = False 
         elif symbol == key.RIGHT: 
             self.keys['right'] = False
+        elif symbol == key.A:
+            self.keys['A'] = False
+        elif symbol == key.D:
+            self.keys['D'] = False
 
     def within_bounds_x(self, other):
         if ((self.position[0] >= other.position[0] - other.width / 2) & (self.position[0] <= other.position[0] + other.width / 2)):
@@ -124,6 +137,20 @@ class Player(PhysicalObject):
             if self.grounded():
                 self.velocity_y += 850
 
+        if self.teletime == 0:
+            if self.keys['A']:
+                self.velocity_x = 0
+                self.x = self.x - 150
+                self.teletime = 10
+            
+            if self.keys['D']:
+                self.velocity_x = 0
+                self.x = self.x + 150
+                self.teletime = 10
+
+        if self.teletime > 0:
+            self.teletime = self.teletime - 1
+        
         super(Player, self).update(dt)
 
 
