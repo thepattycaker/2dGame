@@ -1,5 +1,6 @@
 import pyglet, math
 from pyglet.window import key
+from math import sqrt
 
 game_window = pyglet.window.Window(800, 600)
 
@@ -55,11 +56,14 @@ class Player(PhysicalObject):
 		self.warp_here_x, self.warp_here_y = 0, 0
 		self.keys = dict(left=False, right=False, up=False)
 		self.mouse = dict(left=False)
+		self.max_range = 200
 
 	def on_mouse_press(self, x, y, button, modifiers):
 		if button == pyglet.window.mouse.LEFT:
-			print('I have pecs.')
+			# print('I have pecs.')
 			self.mouse['left'] = True
+		hypotenuse = sqrt((self.x - x) ** 2 + (self.y - y) ** 2)
+		# if hypotenuse > self.max_range:
 		self.warp_here_x = x
 		self.warp_here_y = y
 		print(self.warp_here_x)
@@ -67,10 +71,11 @@ class Player(PhysicalObject):
 
 	def on_mouse_release(self, x, y, button, modifiers):
 		if button == pyglet.window.mouse.LEFT:
-			print('But not anymore.')
+			# print('But not anymore.')
 			self.keys['up'] = False
-		self.warp_here_x = 0
 		self.warp_here_y = 0
+
+		#print tests
 		print(self.warp_here_x)
 		print(self.warp_here_y)
 
@@ -141,7 +146,12 @@ class Player(PhysicalObject):
 
 		if self.mouse['left']:
 			if self.grounded():
-				self.velocity_y += self.warp_here_y * 2
+				self.y += self.warp_here_y
+				self.x = self.warp_here_x
+
+
+		# print(self.x)
+		
 
 		super(Player, self).update(dt)
 
