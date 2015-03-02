@@ -19,7 +19,7 @@ def distance(point_1=(0, 0), point_2=(0, 0)):
 
 def collides_with(player_object, other_object): 
 	collision_distance = player_object.image.width/2 + other_object.image.width/2 
-	actual_distance = distance( player_object.position, other_object.position) 
+	actual_distance = distance(player_object.position, other_object.position) 
 	return (actual_distance <= collision_distance)
 
 def collides_with_horizontal(player_object, other_object): 
@@ -56,10 +56,18 @@ class Player(PhysicalObject):
 	def on_key_press(self, symbol, modifiers):
 		if symbol == key.UP: 
 			self.keys['up'] = True 
-		elif symbol == key.LEFT: 
-			self.keys['left'] = True 
+		elif (symbol == key.LEFT):
+			for i in range(1, len(game_objects)):
+				if collides_with_horizontal(self, game_objects[i]) & (self.position[0] >= game_objects[i].position[0]): 
+					self.keys['left'] = False
+				else:
+					self.keys['left'] = True
 		elif symbol == key.RIGHT: 
-			self.keys['right'] = True 
+			for i in range(1, len(game_objects)):
+				if collides_with_horizontal(self, game_objects[i]) & (self.position[0] <= game_objects[i].position[0]): 
+					self.keys['right'] = False
+				else:
+					self.keys['right'] = True
 
 	def on_key_release(self, symbol, modifiers):
 		if symbol == key.UP: 
