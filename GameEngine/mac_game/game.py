@@ -65,6 +65,16 @@ class PhysicalObject(pyglet.sprite.Sprite):
         self.x += self.velocity_x * dt
         self.y += self.velocity_y * dt
 
+    def is_death_obj(self):
+        return False
+
+class DeathObject(PhysicalObject):
+    def __init__(self, *args, **kwargs):
+        super(PhysicalObject, self).__init__(*args, **kwargs)
+
+    def is_death_obj(self):
+        return True
+
 class Player(PhysicalObject):
     teletime = 0;
 
@@ -194,7 +204,7 @@ class Player(PhysicalObject):
 
 desktop = PhysicalObject(img=desktop_image, x=396, y=10, batch=main_batch)
 computer = PhysicalObject(img=computer_image, x=150, y=desktop.height+75, batch=main_batch)
-pencils = PhysicalObject(img=pencils_image, x=340, y=desktop.height+50, batch=main_batch)
+pencils = DeathObject(img=pencils_image, x=340, y=desktop.height+50, batch=main_batch)
 books = PhysicalObject(img=books_image, x=600, y=desktop.height+70, batch=main_batch)
 cute_blob = PhysicalObject(img=cute_blob, x=700, y=desktop.height+260, batch=main_batch)
 
