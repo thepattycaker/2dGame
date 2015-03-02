@@ -15,6 +15,7 @@ pencils_image = pyglet.resource.image("Pencils.png")
 desktop_image = pyglet.resource.image("Desktop.png")
 books_image = pyglet.resource.image("books.png")
 cute_blob = pyglet.resource.image("cuteblob.png")
+death_blob = pyglet.resource.image("death.png")
 
 width, height = background.width, background.height
 game_window = pyglet.window.Window(width, height)
@@ -52,6 +53,7 @@ center_image(pencils_image)
 center_image(desktop_image)
 center_image(books_image)
 center_image(cute_blob)
+center_image(death_blob)
 
 level_label = pyglet.text.Label(text="This Is Not Mario", x=400, y=575, anchor_x='center', batch=main_batch) #level label
 
@@ -71,6 +73,12 @@ class PhysicalObject(pyglet.sprite.Sprite):
 class DeathObject(PhysicalObject):
     def __init__(self, *args, **kwargs):
         super(PhysicalObject, self).__init__(*args, **kwargs)
+
+        self.velocity_x, self.velocity_y = 0.0, 0.0
+
+    def update(self, dt):
+        self.x += self.velocity_x * dt
+        self.y += self.velocity_y * dt
 
     def is_death_obj(self):
         return True
